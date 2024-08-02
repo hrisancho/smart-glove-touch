@@ -1,0 +1,5 @@
+raw emg -> egm metrics (activity level from 0 to 100) -> activity true or false
+raw imu -> angles and positions -> angles in сустав
+
+
+keyboard and mouse emulation - команды не связанные с эмг или 

@@ -1,0 +1,6 @@
+smart-glove-touch:
+  addres: "127.0.0.1"
+  port: 8000
+  # Колличество каналов 
+  service:
+    
