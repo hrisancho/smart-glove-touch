@@ -12,4 +12,4 @@ protoc:
 	protoc --proto_path=./proto --python_out=./pythonProto ./proto/*.proto
 
 run:
-	uvicorn main:app
+	python3 main.py
