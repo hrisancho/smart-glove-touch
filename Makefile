@@ -9,7 +9,8 @@ sub:
 	git submodule update --init --recursive --remote
 	
 protoc:
-	protoc --proto_path=./proto --python_out=./pythonProto ./proto/*.proto
+	python3 -m grpc_tools.protoc -I./controllerProto/ --python_out=./controllerProto ./controllerProto/*.proto
+	python3 -m grpc_tools.protoc -I./grpcProto --python_out=./grpcProto --grpc_python_out=./grpcProto/ ./grpcProto/*.proto
 
 run:
 	python3 main.py

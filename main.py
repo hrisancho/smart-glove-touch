@@ -58,12 +58,29 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
+
+import controllerProto.glove_pb2 as glove_pb2
+import ast
+
+
 @app.websocket(str(conf["web-soket-endpoint"]["imu"]))
 async def websocketIMU(websocket: WebSocket):
-    await manager.connect(websocket)
+    # await manager.connect(websocket)
+    await websocket.accept()
+
     try:
         while True:
             data = await websocket.receive_text()
+            
+            logger.info(f"Data raw: {data}")
+            bytdata = ast.literal_eval(data)
+            # bytdata = ast.literal_eval(repr(data)[1:-1])
+            logger.info(f"Byte data: {bytdata}")
+
+            msg = glove_pb2.System()
+            msg.ParseFromString(bytdata)
+            logger.info(f"Mesege: {msg}")
+
             # await manager.send_personal_message(f"You wrote: {data}", websocket)
             await manager.broadcast(f"{data}")
     except WebSocketDisconnect:

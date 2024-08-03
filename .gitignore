@@ -9,6 +9,7 @@ __pycache__/
 #protobuff generate file 
 *.pb.*
 *_pb2.*
+*_pb2_*
 .idea
 
 # Distribution / packaging

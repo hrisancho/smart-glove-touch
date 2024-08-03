@@ -1,81 +1,42 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+import controllerProto.glove_pb2 as glove_pb2 
 
-app = FastAPI()
+# msg = glove_pb2.System()
+# msg.message = "fun"
 
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <h2>Your ID: <span id="ws-id"></span></h2>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var client_id = Date.now()
-            document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
+# print(msg)
 
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: list[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
+# bytMsg = msg.SerializeToString()
+# print(bytMsg)
+# print(type(bytMsg))
+# print(str(bytMsg))
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+# df = '\n\x03fun'
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
+# msg = glove_pb2.System()
+# msg.ParseFromString(str.encode('\n\x03fun'))
 
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
+# print(f"Mesege: {msg}")
+
+import ast
+
+# Исходная строка
+df = "b'\\n\\x03fun'"
+
+# Преобразование строки в bytes
+byte_data = ast.literal_eval(df)
+
+# Проверка результата
+print(byte_data)  # Вывод: b'\n\x03fun'
+print(type(byte_data))  # Вывод: <class 'bytes'>
 
 
-manager = ConnectionManager()
+# print(df.decode("utf-8")) 
+# df2 = str.encode(df)
+# print(df2)
 
+msg = glove_pb2.System()
+msg.ParseFromString(byte_data)
 
-@app.get("/")
-async def get():
-    return HTMLResponse(html)
-
-
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await manager.send_personal_message(f"You wrote: {data}", websocket)
-            await manager.broadcast(f"Client #{client_id} says: {data}")
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+# print(f"Mesege: {msg}")
