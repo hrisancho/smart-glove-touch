@@ -1,42 +1,44 @@
 import controllerProto.glove_pb2 as glove_pb2 
-
-# msg = glove_pb2.System()
-# msg.message = "fun"
-
-# print(msg)
-
-
-
-# bytMsg = msg.SerializeToString()
-# print(bytMsg)
-# print(type(bytMsg))
-# print(str(bytMsg))
-
-# df = '\n\x03fun'
-
-# msg = glove_pb2.System()
-# msg.ParseFromString(str.encode('\n\x03fun'))
-
-# print(f"Mesege: {msg}")
-
 import ast
 
-# Исходная строка
-df = "b'\\n\\x03fun'"
+from websockets.sync.client import connect
+import crcengine
 
-# Преобразование строки в bytes
-byte_data = ast.literal_eval(df)
-
-# Проверка результата
-print(byte_data)  # Вывод: b'\n\x03fun'
-print(type(byte_data))  # Вывод: <class 'bytes'>
+sysmsg = glove_pb2.System(
+    message = "Првиет мир"
+)
 
 
-# print(df.decode("utf-8")) 
-# df2 = str.encode(df)
-# print(df2)
+bitsys = sysmsg.SerializeToString()
 
-msg = glove_pb2.System()
-msg.ParseFromString(byte_data)
 
-# print(f"Mesege: {msg}")
+crc_algorithm = crcengine.new('crc32')
+result = crc_algorithm(bitsys)
+
+msg = glove_pb2.MessageWitchCRC(
+            msg = bitsys,
+            kind = glove_pb2.CRCType.crc32,
+            crc = result,
+            type = glove_pb2.MessageType.system
+)
+
+print(type(msg))
+
+with connect("ws://127.0.0.1:8000/ws/imu") as websocket:
+
+        
+        bitmsg = msg.SerializeToString()
+        websocket.send(bitmsg)
+        # message = websocket.recv()
+        print(f"Received: {bitmsg}")
+
+
+        websocket.close()
+
+
+
+
+
+# ws.send("Hello, World")
+print ("Sent")
+print ("Receiving...")

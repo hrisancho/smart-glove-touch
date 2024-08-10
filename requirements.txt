@@ -1,7 +1,9 @@
+#  TODO проверить работу
 protobuf # 5.27.3
 uvicorn # 0.30.4
 fastapi # 0.111.1
 websockets
+crcengine
 
 grpcio 
 grpcio-tools

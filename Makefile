@@ -10,7 +10,7 @@ sub:
 	
 protoc:
 	python3 -m grpc_tools.protoc -I./controllerProto/ --python_out=./controllerProto ./controllerProto/*.proto
-	python3 -m grpc_tools.protoc -I./grpcProto --python_out=./grpcProto --grpc_python_out=./grpcProto/ ./grpcProto/*.proto
+	python3 -m grpc_tools.protoc -I./grpcProto --python_out=./ --grpc_python_out=./ ./grpcProto/*.proto
 
 run:
 	python3 main.py
